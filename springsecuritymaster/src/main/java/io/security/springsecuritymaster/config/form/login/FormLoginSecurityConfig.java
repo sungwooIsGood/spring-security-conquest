@@ -1,4 +1,4 @@
-package io.security.springsecuritymaster.config;
+package io.security.springsecuritymaster.config.form.login;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfig {
+public class FormLoginSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,6 +33,14 @@ public class SecurityConfig {
                             response.sendRedirect("/login");
                         }))
                         .permitAll()
+                )
+                .rememberMe(rememberMe -> rememberMe
+                        .alwaysRemember(true) // or false 기본 값은 false이다.
+                        .tokenValiditySeconds(3600)
+                        .userDetailsService(userDetailsService())
+                        .rememberMeParameter("remember")
+                        .rememberMeCookieDomain("remember")
+                        .key("security")
                 );
 
         return http.build();
