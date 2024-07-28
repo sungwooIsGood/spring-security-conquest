@@ -15,16 +15,21 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    /**
+     * requestMatchers().permitAll(): 를 통해 root 경로는 전체 이용자 허용
+     * anyRequest().authenticated(): 모든 경로는 인증이 필요하다고 설정
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults())
-        ;
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/").permitAll()
+                .anyRequest().authenticated()
+        )
+        .formLogin(Customizer.withDefaults());
+
         return http.build();
     }
+
 
     @Bean
     public UserDetailsService userDetailsService(){
