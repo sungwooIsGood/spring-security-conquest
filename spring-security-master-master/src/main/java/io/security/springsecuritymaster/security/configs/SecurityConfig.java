@@ -1,5 +1,6 @@
 package io.security.springsecuritymaster.security.configs;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -15,7 +16,10 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @EnableWebSecurity
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final UserDetailsService userDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,8 +33,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/signup").permitAll() // root 경로, /signup 경로 전체 이용자 허용
                         .anyRequest().authenticated() // 모든 경로는 인증이 필요하다고 설정
                 )
-                .formLogin(Customizer.withDefaults());
-
+                .formLogin(Customizer.withDefaults())
+                .userDetailsService(userDetailsService); // 커스텀 user service 객체 주입
         return http.build();
     }
 
@@ -42,9 +46,4 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
-        return new InMemoryUserDetailsManager(user);
-    }
 }

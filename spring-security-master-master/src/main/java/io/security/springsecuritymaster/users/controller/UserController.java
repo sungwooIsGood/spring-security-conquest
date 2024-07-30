@@ -11,8 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@Controller
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class UserController {
 
@@ -29,6 +28,6 @@ public class UserController {
 
         userService.createUser(account);
 
-        return "redirect:/";
+        return "ddredirect:/";
     }
 }
