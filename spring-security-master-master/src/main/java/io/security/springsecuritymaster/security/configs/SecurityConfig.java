@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -23,19 +25,26 @@ public class SecurityConfig {
          * post 방식의 요청은 csrf 기능이 켜져있으면 csrf 토큰이 서버가 전달된다.
          */
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**","/images/**","/js/**","/favicon.*","/*/icon-*").permitAll() // 정적 자원 설정
-                .requestMatchers("/").permitAll() // root 경로는 전체 이용자 허용
-                .anyRequest().authenticated() // 모든 경로는 인증이 필요하다고 설정
-        )
-        .formLogin(Customizer.withDefaults());
+                        .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*").permitAll() // 정적 자원 설정
+                        .requestMatchers("/", "/signup").permitAll() // root 경로, /signup 경로 전체 이용자 허용
+                        .anyRequest().authenticated() // 모든 경로는 인증이 필요하다고 설정
+                )
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
 
+    /**
+     * bcryt 단방향 암호화를 통한 비밀번호 암호화
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         UserDetails user = User.withUsername("user").password("{noop}1111").roles("USER").build();
-        return  new InMemoryUserDetailsManager(user);
+        return new InMemoryUserDetailsManager(user);
     }
 }
