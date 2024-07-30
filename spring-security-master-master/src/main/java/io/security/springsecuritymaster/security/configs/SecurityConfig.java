@@ -27,7 +27,7 @@ public class SecurityConfig {
                 .requestMatchers("/").permitAll() // root 경로는 전체 이용자 허용
                 .anyRequest().authenticated() // 모든 경로는 인증이 필요하다고 설정
         )
-        .formLogin(Customizer.withDefaults());// 커스텀 로그인 페이지 경로 설정, 모든 이용자 접근 가능
+        .formLogin(Customizer.withDefaults());
 
         return http.build();
     }
